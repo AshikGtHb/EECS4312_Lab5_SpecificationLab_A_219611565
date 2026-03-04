@@ -20,59 +20,6 @@ for full requirements.
         List of valid start times as "HH:MM" sorted ascending
     """
  
-# from typing import List, Dict
-
-# def suggest_slots(
-#     events: List[Dict[str, str]],
-#     meeting_duration: int,
-#     day: str
-# ) -> List[str]:
-
-#     WORK_START = 9 * 60
-#     WORK_END = 17 * 60
-#     LUNCH_START = 12 * 60
-#     LUNCH_END = 13 * 60
-#     STEP = 15
-
-#     def to_minutes(t: str) -> int:
-#         h, m = map(int, t.split(":"))
-#         return h * 60 + m
-
-#     def to_time_str(m: int) -> str:
-#         return f"{m//60:02d}:{m%60:02d}"
-
-#     # Convert events to minutes and ignore those outside working hours
-#     valid_events = []
-#     for e in events:
-#         start = to_minutes(e["start"])
-#         end = to_minutes(e["end"])
-#         if end <= WORK_START or start >= WORK_END:
-#             continue
-#         valid_events.append((start, end))
-
-#     slots = []
-#     t = WORK_START
-
-#     while t + meeting_duration <= WORK_END:
-#         meeting_end = t + meeting_duration
-
-#         # Block lunch overlap
-#         if not (meeting_end <= LUNCH_START or t >= LUNCH_END):
-#             t += STEP
-#             continue
-
-#         overlap = False
-#         for s, e in valid_events:
-#             if t < e and meeting_end >= s:
-#                 overlap = True
-#                 break
-
-#         if not overlap:
-#             slots.append(to_time_str(t))
-
-#         t += STEP
-
-#     return sorted(slots)
 from typing import List, Dict
 
 def suggest_slots(
