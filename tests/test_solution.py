@@ -64,3 +64,60 @@ def test_lunch_break_blocks_all_slots_during_lunch():
     assert "12:45" not in slots
 
 """TODO: Add at least 5 additional test cases to test your implementation."""
+def test_fully_booked_day_returns_no_slots():
+    """
+    Edge case:
+    If the entire working day is booked (except lunch), no slots should exist.
+    """
+    events = [
+        {"start": "09:00", "end": "12:00"},
+        {"start": "13:00", "end": "17:00"},
+    ]
+    slots = suggest_slots(events, meeting_duration=30, day="2026-02-01")
+
+    assert slots == []
+
+
+def test_meeting_duration_too_long_for_day():
+    """
+    Edge case:
+    Meeting duration longer than total available working hours.
+    """
+    events = []
+    slots = suggest_slots(events, meeting_duration=600, day="2026-02-01")
+
+    assert slots == []
+
+
+def test_event_covers_entire_working_day():
+    """
+    Edge case:
+    A single event covering the whole workday should leave no slots.
+    """
+    events = [{"start": "09:00", "end": "17:00"}]
+    slots = suggest_slots(events, meeting_duration=30, day="2026-02-01")
+
+    assert slots == []
+
+
+def test_event_ending_at_lunch_blocks_before_lunch_slots():
+    """
+    Edge case:
+    Event ending exactly at 12:00 should block meetings that overlap into lunch.
+    """
+    events = [{"start": "11:00", "end": "12:00"}]
+    slots = suggest_slots(events, meeting_duration=30, day="2026-02-01")
+
+    assert "11:30" not in slots
+    assert "10:15" in slots
+
+
+def test_event_ending_at_work_start_allows_first_slot():
+    """
+    Edge case:
+    Event ending exactly at 09:00 should not block the first slot.
+    """
+    events = [{"start": "08:00", "end": "09:00"}]
+    slots = suggest_slots(events, meeting_duration=30, day="2026-02-01")
+
+    assert "09:00" in slots
