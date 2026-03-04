@@ -121,3 +121,52 @@ def test_event_ending_at_work_start_allows_first_slot():
     slots = suggest_slots(events, meeting_duration=30, day="2026-02-01")
 
     assert "09:00" in slots
+
+def test_friday_no_slots_after_1500_with_short_day_string():
+    """
+    Friday rule:
+    Meetings must not start after 15:00 on Fridays ("Fri").
+    """
+    events = []
+    slots = suggest_slots(events, meeting_duration=30, day="Fri")
+
+    assert "15:00" in slots
+    assert "15:15" not in slots
+    assert "15:30" not in slots
+    assert "16:00" not in slots
+
+
+def test_friday_no_slots_after_1500_with_full_day_string():
+    """
+    Friday rule:
+    Meetings must not start after 15:00 when day="Friday".
+    """
+    events = []
+    slots = suggest_slots(events, meeting_duration=30, day="Friday")
+
+    assert "15:00" in slots
+    assert "15:15" not in slots
+    assert "16:00" not in slots
+
+
+def test_friday_1500_slot_is_valid():
+    """
+    Friday rule:
+    A meeting starting exactly at 15:00 on Friday is allowed.
+    """
+    events = []
+    slots = suggest_slots(events, meeting_duration=30, day="Fri")
+
+    assert "15:00" in slots
+
+
+def test_non_friday_allows_slots_after_1500():
+    """
+    Control test:
+    Non-Friday days should still allow slots after 15:00.
+    """
+    events = []
+    slots = suggest_slots(events, meeting_duration=30, day="Mon")
+
+    assert "15:15" in slots
+    assert "16:00" in slots

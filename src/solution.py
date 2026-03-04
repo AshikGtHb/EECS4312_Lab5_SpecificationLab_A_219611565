@@ -39,6 +39,7 @@ def suggest_slots(
     WORK_END = to_minutes("17:00")
     LUNCH_START = to_minutes("12:00")
     LUNCH_END = to_minutes("13:00")
+    FRIDAY_LIMIT = to_minutes("15:00")
 
     # Convert and filter events within working hours
     busy = []
@@ -59,6 +60,9 @@ def suggest_slots(
     t = WORK_START
 
     while t + meeting_duration <= WORK_END:
+        # Friday rule: meetings cannot start after 15:00
+        if day in ("Fri", "Friday") and t > FRIDAY_LIMIT:
+            break
         meeting_end = t + meeting_duration
         valid = True
         for bstart, bend in busy:
